@@ -9,6 +9,7 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - api
+    restart: unless-stopped
 
   api:
     build: ./api
@@ -18,11 +19,16 @@ services:
     depends_on:
       - postgres
       - redis
+    restart: unless-stopped
 
   postgres:
     image: postgres:15
     environment:
       POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
 
   redis:
     image: redis:7
+    restart: unless-stopped
